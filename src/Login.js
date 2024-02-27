@@ -5,9 +5,10 @@ let Login = () => {
   var [password, setPassword] = useState("");
 
 //will get executed on initial render
-  // useEffect(()=>{
-  //   console.log(`renter user:${email} and password:${password}`)
-  // },[]);
+  useEffect(()=>{
+    document.title = "eCommerce - Login"
+    console.log(`renter user:${email} and password:${password}`)
+  },[]);
 
 //will get executed on initial render+every state changes
   // useEffect(()=>{
@@ -19,13 +20,13 @@ let Login = () => {
   //   console.log(`renter user:${email} and password:${password}`)
   // },[password]);
 
-//will get executed on component unmount
-  useEffect(()=>{
-    return ()=>{
-      console.log(`renter user:${email} and password:${password}`);
+//will get executed on component unmount  -> cleanup code --> un handle the promise 
+  // useEffect(()=>{
+  //   return ()=>{
+  //     console.log(`renter user:${email} and password:${password}`);
 
-    }
-  });
+  //   }
+  //});
   return (
     <div className="row">
       <div className="col-lg-5 col-md-7 mx-auto">
