@@ -1,9 +1,31 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 let Login = () => {
-  var [email, setEmail] = useState("abc@test.com");
-  var [password, setPassword] = useState("Abc123");
+  var [email, setEmail] = useState("");
+  var [password, setPassword] = useState("");
 
+//will get executed on initial render
+  // useEffect(()=>{
+  //   console.log(`renter user:${email} and password:${password}`)
+  // },[]);
+
+//will get executed on initial render+every state changes
+  // useEffect(()=>{
+  //   console.log(`renter user:${email} and password:${password}`)
+  // });
+
+////will get executed on initial render and when the state o password change
+  // useEffect(()=>{
+  //   console.log(`renter user:${email} and password:${password}`)
+  // },[password]);
+
+//will get executed on component unmount
+  useEffect(()=>{
+    return ()=>{
+      console.log(`renter user:${email} and password:${password}`);
+
+    }
+  });
   return (
     <div className="row">
       <div className="col-lg-5 col-md-7 mx-auto">
