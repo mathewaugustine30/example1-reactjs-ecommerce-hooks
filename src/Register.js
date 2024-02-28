@@ -1,4 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
+import { UserContext } from "./UserContext";
+import { useNavigate } from "react-router-dom";
 
 let Register = () => {
   let [state, setState] = useState({
@@ -10,7 +12,7 @@ let Register = () => {
     country: "",
     receiveNewsLetters: "",
   });
-
+  const navigate = useNavigate();
   let [countries] = useState([
     { id: 1, countryName: "India" },
     { id: 2, countryName: "USA" },
@@ -43,6 +45,8 @@ let Register = () => {
   });
 
   let [message, setMessage] = useState("");
+
+  let userContextRetrieved = useContext(UserContext);
 
   //validate
   let validate = () => {
@@ -153,9 +157,17 @@ let Register = () => {
       });
 
       if (response.ok) {
+        let responseBody = await response.json();
+        userContextRetrieved.setUser({
+          ...userContextRetrieved.user,
+          isLoggedIn: true,
+          currentUserName: responseBody.fullName,
+          currentUserId: responseBody.id,
+        });
         setMessage(
           <span className="text-success">Successfully Registered</span>
         );
+        navigate("/dashboard");
       } else {
         setMessage(
           <span className="text-danger">Errors in database connection</span>

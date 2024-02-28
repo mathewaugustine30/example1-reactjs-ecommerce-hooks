@@ -1,9 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect,useContext } from "react";
 import { useNavigate } from 'react-router-dom';
+import { UserContext } from "./UserContext";
 
 let Login = (props) => {
   var [email, setEmail] = useState("");
   var [password, setPassword] = useState("");
+
+  let userContextValueRetrieved = useContext(UserContext);
+  console.log(userContextValueRetrieved);
   const navigate = useNavigate();
   let [dirty, setDirty] = useState({
     email: false,
@@ -110,6 +114,11 @@ let Login = (props) => {
         //Status code is 200
         let responseBody = await response.json();
         if (responseBody.length > 0) {
+          userContextValueRetrieved.setUser({...userContextValueRetrieved.user,
+            isUserLoggedIn:true,
+            currentUserId:responseBody[0].id,
+            currentUserName:responseBody[0].fullName,
+          })
           navigate("/dashboard");
         } else {
           setLoginMessage(
