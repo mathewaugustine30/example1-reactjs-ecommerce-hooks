@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from 'react-router-dom';
 
 let Login = (props) => {
   var [email, setEmail] = useState("");
   var [password, setPassword] = useState("");
-
+  const navigate = useNavigate();
   let [dirty, setDirty] = useState({
     email: false,
     password: false,
@@ -109,7 +110,7 @@ let Login = (props) => {
         //Status code is 200
         let responseBody = await response.json();
         if (responseBody.length > 0) {
-          props.history.replace("/dashboard");
+          navigate("/dashboard");
         } else {
           setLoginMessage(
             <span className="text-danger">Invalid Login, please try again</span>
