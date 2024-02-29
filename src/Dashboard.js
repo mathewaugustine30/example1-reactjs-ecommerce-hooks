@@ -1,8 +1,7 @@
-import React, { useEffect, useContext, useState } from "react";
+import React, { useEffect, useContext, useState, useCallback } from "react";
 import { UserContext } from "./UserContext";
 import Order from "./Order";
-import { OrderService,ProductService } from "./Service";
-
+import { ProductService,OrderService } from "./Service";
 
 function Dashboard() {
   let [orders, setOrders] = useState([]);
@@ -10,58 +9,56 @@ function Dashboard() {
   //get context
   let userContext = useContext(UserContext);
 
+  //loadDataFromDatabase function that fetches data from 'orders' array from json file
+  let loadDataFromDatabase = async () => {
+    console.log('loadDataFromDatabase')
+    //load data from database
+    let ordersResponse = await fetch(
+      `http://localhost:5000/orders?userId=${userContext.user.currentUserId}`,
+      { method: "GET" }
+    );
+
+    if (ordersResponse.ok) {
+      //status code is 200
+      let ordersResponseBody = await ordersResponse.json();
+
+      //get all data from products
+      let productsResponse = await ProductService.fetchProducts();
+      if (productsResponse.ok) {
+        let productsResponseBody = await productsResponse.json();
+
+        //read all orders data
+        ordersResponseBody.forEach((order) => {
+          order.product = ProductService.getProductByProductId(
+            order.productId,productsResponseBody
+          );
+        });
+
+        console.log(ordersResponseBody);
+
+        setOrders(ordersResponseBody);
+      }
+    }
+  }
+
   //executes only once - on initial render =  componentDidMount
   useEffect(() => {
     document.title = "Dashboard - eCommerce";
 
-    //load data from database
-    (async () => {
-      let ordersResponse = await fetch(
-        `http://localhost:5000/orders?userId=${userContext.user.currentUserId}`,
-        { method: "GET" }
-      );
-
-      if (ordersResponse.ok) {
-        //status code is 200
-        let ordersResponseBody = await ordersResponse.json();
-
-        //get all data from products
-        let productsResponse = await ProductService.fetchProducts();
-        if (productsResponse.ok) {
-          let productsResponseBody = await productsResponse.json();
-
-
-          //read all orders data
-          ordersResponseBody.forEach((order) => {
-            order.product = ProductService.getProductByProductId(order.productId,productsResponseBody);
-            
-            productsResponseBody.find(
-              (prod) => prod.id === String(order.productId)
-            );
-          });
-
-//           // Create an array of orders with a product field
-// const ordersWithProducts = ordersResponseBody.map(order => {
-//   const product = productsResponseBody.find(prod => prod.id === String(order.productId));
-//   return {
-//     ...order,
-//     product
-//   };
-// });
-
-          console.log(ordersResponseBody);
-
-          setOrders(ordersResponseBody);
-        }
-      }
-    })();
-  }, [userContext.user.currentUserId]);
+    loadDataFromDatabase();
+  }, [userContext.user.currentUserId, loadDataFromDatabase]);
 
   return (
     <div className="row">
       <div className="col-12 py-3 header">
         <h4>
-          <i className="fa fa-dashboard"></i> Dashboard
+          <i className="fa fa-dashboard"></i> Dashboard{" "}
+          <button
+            className="btn btn-sm btn-info"
+            onClick={loadDataFromDatabase}
+          >
+            <i className="fa fa-refresh"></i> Refresh
+          </button>
         </h4>
       </div>
 
