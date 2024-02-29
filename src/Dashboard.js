@@ -10,7 +10,7 @@ function Dashboard() {
   let userContext = useContext(UserContext);
 
   //loadDataFromDatabase function that fetches data from 'orders' array from json file
-  let loadDataFromDatabase = async () => {
+  let loadDataFromDatabase = useCallback(async () => {
     console.log('loadDataFromDatabase')
     //load data from database
     let ordersResponse = await fetch(
@@ -39,7 +39,7 @@ function Dashboard() {
         setOrders(ordersResponseBody);
       }
     }
-  }
+  },[userContext.user.currentUserId])
 
   //executes only once - on initial render =  componentDidMount
   useEffect(() => {
