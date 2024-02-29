@@ -1,14 +1,13 @@
-import React, { useState, useEffect,useContext } from "react";
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect, useContext } from "react";
 import { UserContext } from "./UserContext";
+import { useNavigate } from 'react-router-dom';
 
 let Login = (props) => {
-  var [email, setEmail] = useState("");
-  var [password, setPassword] = useState("");
-
-  let userContextValueRetrieved = useContext(UserContext);
-  console.log(userContextValueRetrieved);
+  var [email, setEmail] = useState("scott@test.com");
+  var [password, setPassword] = useState("Scott123");
+  let userContext = useContext(UserContext);
   const navigate = useNavigate();
+
   let [dirty, setDirty] = useState({
     email: false,
     password: false,
@@ -113,12 +112,17 @@ let Login = (props) => {
       if (response.ok) {
         //Status code is 200
         let responseBody = await response.json();
+
+        //set global state using context
         if (responseBody.length > 0) {
-          userContextValueRetrieved.setUser({...userContextValueRetrieved.user,
-            isUserLoggedIn:true,
-            currentUserId:responseBody[0].id,
-            currentUserName:responseBody[0].fullName,
-          })
+          userContext.setUser({
+            ...userContext.user,
+            isLoggedIn: true,
+            currentUserName: responseBody[0].fullName,
+            currentUserId: responseBody[0].id,
+          });
+
+          //redirect to /dashboard
           navigate("/dashboard");
         } else {
           setLoginMessage(

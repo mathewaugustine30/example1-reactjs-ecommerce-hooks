@@ -9,11 +9,12 @@ import NavBar from "./NavBar";
 import { UserContext } from "./UserContext";
 
 function App() {
-  let [user,setUser] = useState({
-    isUserLoggedIn:false,
-    currentUserId:null,
-    currentUserName:null,
-  })
+  let [user, setUser] = useState({
+    isLoggedIn: false,
+    currentUserId: null,
+    currentUserName: null,
+  });
+
   return (
     <UserContext.Provider value={{user,setUser}} >
     <HashRouter>

@@ -2,7 +2,8 @@ import React, { useState, useEffect, useContext } from "react";
 import { UserContext } from "./UserContext";
 import { useNavigate } from "react-router-dom";
 
-let Register = () => {
+let Register = (props) => {
+  const navigate = useNavigate();
   let [state, setState] = useState({
     email: "",
     password: "",
@@ -12,7 +13,7 @@ let Register = () => {
     country: "",
     receiveNewsLetters: "",
   });
-  const navigate = useNavigate();
+
   let [countries] = useState([
     { id: 1, countryName: "India" },
     { id: 2, countryName: "USA" },
@@ -46,7 +47,7 @@ let Register = () => {
 
   let [message, setMessage] = useState("");
 
-  let userContextRetrieved = useContext(UserContext);
+  let userContext = useContext(UserContext);
 
   //validate
   let validate = () => {
@@ -129,6 +130,7 @@ let Register = () => {
     document.title = "Register - eCommerce";
   }, []);
 
+  //executes when the user clicks on Register button
   let onRegisterClick = async () => {
     //set all controls as dirty
     let dirtyData = dirty;
@@ -158,15 +160,18 @@ let Register = () => {
 
       if (response.ok) {
         let responseBody = await response.json();
-        userContextRetrieved.setUser({
-          ...userContextRetrieved.user,
+
+        userContext.setUser({
+          ...userContext.user,
           isLoggedIn: true,
           currentUserName: responseBody.fullName,
           currentUserId: responseBody.id,
         });
+
         setMessage(
           <span className="text-success">Successfully Registered</span>
         );
+
         navigate("/dashboard");
       } else {
         setMessage(
