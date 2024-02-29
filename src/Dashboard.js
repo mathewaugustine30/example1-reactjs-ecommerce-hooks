@@ -1,16 +1,8 @@
 import React, { useEffect, useContext, useState } from "react";
 import { UserContext } from "./UserContext";
 import Order from "./Order";
+import { OrderService,ProductService } from "./Service";
 
-//getPreviousOrders
-let getPreviousOrders = (orders) => {
-  return orders.filter((ord) => ord.isPaymentCompleted === true);
-};
-
-//getCart
-let getCart = (orders) => {
-  return orders.filter((ord) => ord.isPaymentCompleted === false);
-};
 
 function Dashboard() {
   let [orders, setOrders] = useState([]);
@@ -34,16 +26,16 @@ function Dashboard() {
         let ordersResponseBody = await ordersResponse.json();
 
         //get all data from products
-        let productsResponse = await fetch("http://localhost:5000/products", {
-          method: "GET",
-        });
+        let productsResponse = await ProductService.fetchProducts();
         if (productsResponse.ok) {
           let productsResponseBody = await productsResponse.json();
 
 
           //read all orders data
           ordersResponseBody.forEach((order) => {
-            order.product = productsResponseBody.find(
+            order.product = ProductService.getProductByProductId(order.productId,productsResponseBody);
+            
+            productsResponseBody.find(
               (prod) => prod.id === String(order.productId)
             );
           });
@@ -80,17 +72,17 @@ function Dashboard() {
             <h4 className="py-2 my-2 text-info border-bottom border-info">
               <i className="fa fa-history"></i> Previous Orders{" "}
               <span className="badge badge-info">
-                {getPreviousOrders(orders).length}
+                {OrderService.getPreviousOrders(orders).length}
               </span>
             </h4>
 
-            {getPreviousOrders(orders).length === 0 ? (
+            {OrderService.getPreviousOrders(orders).length === 0 ? (
               <div className="text-danger">No Orders</div>
             ) : (
               ""
             )}
 
-            {getPreviousOrders(orders).map((ord) => {
+            {OrderService.getPreviousOrders(orders).map((ord) => {
               return (
                 <Order
                   key={ord.id}
@@ -112,17 +104,17 @@ function Dashboard() {
             <h4 className="py-2 my-2 text-primary border-bottom border-primary">
               <i className="fa fa-shopping-cart"></i> Cart{" "}
               <span className="badge badge-primary">
-                {getCart(orders).length}
+                {OrderService.getCart(orders).length}
               </span>
             </h4>
 
-            {getCart(orders).length === 0 ? (
+            {OrderService.getCart(orders).length === 0 ? (
               <div className="text-danger">No products in your cart</div>
             ) : (
               ""
             )}
 
-            {getCart(orders).map((ord) => {
+            {OrderService.getCart(orders).map((ord) => {
               return (
                 <Order
                   key={ord.id}
