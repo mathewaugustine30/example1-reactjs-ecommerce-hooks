@@ -5,6 +5,8 @@ import { ProductService,OrderService } from "./Service";
 
 function Dashboard() {
   let [orders, setOrders] = useState([]);
+  let [showOrderDeletedAlert, setShowOrderDeletedAlert] = useState(false);
+  let [showOrderPlacedAlert, setShowOrderPlacedAlert] = useState(false);
 
   //get context
   let userContext = useContext(UserContext);
@@ -48,6 +50,61 @@ function Dashboard() {
     loadDataFromDatabase();
   }, [userContext.user.currentUserId, loadDataFromDatabase]);
 
+
+  //When the user clicks on Buy Now(By using useCallback we prevent the needlesss rendering of Order comp)
+  let onBuyNowClick = useCallback(
+    async (orderId, userId, productId, quantity) => {
+      if (window.confirm("Do you want to place order for this product?")) {
+        let updateOrder = {
+          id: orderId,
+          productId: productId,
+          userId: userId,
+          quantity: quantity,
+          isPaymentCompleted: true,
+        };
+
+        let orderResponse = await fetch(
+          `http://localhost:5000/orders/${orderId}`,
+          {
+            method: "PUT",
+            body: JSON.stringify(updateOrder),
+            headers: { "Content-type": "application/json" },
+          }
+        );
+
+        let orderResponseBody = await orderResponse.json();
+        if (orderResponse.ok) {
+          console.log(orderResponseBody);
+          loadDataFromDatabase();
+          setShowOrderPlacedAlert(true);
+        }
+      }
+    },
+    [loadDataFromDatabase]
+  );
+
+  //When the user clicks on Delete button
+  let onDeleteClick = useCallback(
+    async (orderId) => {
+      if (window.confirm("Are you sure to delete this item from cart?")) {
+        let orderResponse = await fetch(
+          `http://localhost:5000/orders/${orderId}`,
+          {
+            method: "DELETE",
+          }
+        );
+        if (orderResponse.ok) {
+          let orderResponseBody = await orderResponse.json();
+          console.log(orderResponseBody);
+          setShowOrderDeletedAlert(true);
+
+          loadDataFromDatabase();
+        }
+      }
+    },
+    [loadDataFromDatabase]
+  );
+
   return (
     <div className="row">
       <div className="col-12 py-3 header">
@@ -90,6 +147,8 @@ function Dashboard() {
                   quantity={ord.quantity}
                   productName={ord.product.productName}
                   price={ord.product.price}
+                  onBuyNowClick={onBuyNowClick}
+                  onDeleteClick={onDeleteClick}
                 />
               );
             })}
@@ -122,6 +181,8 @@ function Dashboard() {
                   quantity={ord.quantity}
                   productName={ord.product.productName}
                   price={ord.product.price}
+                  onBuyNowClick={onBuyNowClick}
+                  onDeleteClick={onDeleteClick}
                 />
               );
             })}
