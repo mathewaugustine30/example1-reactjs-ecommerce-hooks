@@ -164,6 +164,37 @@ function Dashboard() {
               </span>
             </h4>
 
+            {showOrderPlacedAlert ? (
+              <div className="col-12">
+                <div
+                  className="alert alert-success alert-dismissible fade show mt-1"
+                  role="alert"
+                >
+                  You Order has been placed.
+                  <button className="close" type="button" data-dismiss="alert">
+                    <span>&times;</span>
+                  </button>
+                </div>
+              </div>
+            ) : (
+              ""
+            )}
+
+            {showOrderDeletedAlert ? (
+              <div className="col-12">
+                <div
+                  className="alert alert-danger alert-dismissible fade show mt-1"
+                  role="alert"
+                >
+                  Your item has been removed from the cart.
+                  <button className="close" type="button" data-dismiss="alert">
+                    <span>&times;</span>
+                  </button>
+                </div>
+              </div>
+            ) : (
+              ""
+            )}
             {OrderService.getCart(orders).length === 0 ? (
               <div className="text-danger">No products in your cart</div>
             ) : (
