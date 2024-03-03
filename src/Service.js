@@ -36,7 +36,7 @@ export const BrandsService = {
     });
   },
   getBrandByBrandId: (brands, brandId) => {
-    return brands.find((brand) => brand.id === brandId);
+    return brands.find((brand) => brand.id === String(brandId));
   },
 };
 
@@ -47,6 +47,6 @@ export const CategoriesService = {
     });
   },
   getCategoryByCategoryId: (categories, categoryId) => {
-    return categories.find((category) => category.id === categoryId);
+    return categories.find((category) => category.id === String(categoryId));
   },
 };
