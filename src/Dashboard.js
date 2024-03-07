@@ -16,7 +16,7 @@ function Dashboard() {
     console.log('loadDataFromDatabase')
     //load data from database
     let ordersResponse = await fetch(
-      `http://localhost:5000/orders?userId=${userContext.user.currentUserId}`,
+      `http://localhost:5001/orders?userId=${userContext.user.currentUserId}`,
       { method: "GET" }
     );
 
@@ -64,7 +64,7 @@ function Dashboard() {
         };
 
         let orderResponse = await fetch(
-          `http://localhost:5000/orders/${orderId}`,
+          `http://localhost:5001/orders/${orderId}`,
           {
             method: "PUT",
             body: JSON.stringify(updateOrder),
@@ -88,7 +88,7 @@ function Dashboard() {
     async (orderId) => {
       if (window.confirm("Are you sure to delete this item from cart?")) {
         let orderResponse = await fetch(
-          `http://localhost:5000/orders/${orderId}`,
+          `http://localhost:5001/orders/${orderId}`,
           {
             method: "DELETE",
           }

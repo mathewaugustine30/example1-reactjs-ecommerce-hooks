@@ -34,7 +34,7 @@ function Store() {
 
       //get products from db
       let productsResponse = await fetch(
-        `http://localhost:5000/products`,
+        `http://localhost:5001/products`,
         { method: "GET" }
       );
       let productsResponseBody = await productsResponse.json();
@@ -119,7 +119,7 @@ function Store() {
         isPaymentCompleted: false,
       };
 
-      let orderResponse = await fetch(`http://localhost:5000/orders`, {
+      let orderResponse = await fetch(`http://localhost:5001/orders`, {
         method: "POST",
         body: JSON.stringify(newOrder),
         headers: { "Content-Type": "application/json" },

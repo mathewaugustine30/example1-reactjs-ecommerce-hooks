@@ -23,7 +23,7 @@ getProductByProductId: (prodId,products)  =>{
 
 
 fetchProducts : () =>{
-   return fetch("http://localhost:5000/products", {
+   return fetch("http://localhost:5001/products", {
     method: "GET",
   });
 },
@@ -31,7 +31,7 @@ fetchProducts : () =>{
 
 export const BrandsService = {
   fetchBrands: () => {
-    return fetch("http://localhost:5000/brands", {
+    return fetch("http://localhost:5001/brands", {
       method: "GET",
     });
   },
@@ -42,7 +42,7 @@ export const BrandsService = {
 
 export const CategoriesService = {
   fetchCategories: () => {
-    return fetch("http://localhost:5000/categories", {
+    return fetch("http://localhost:5001/categories", {
       method: "GET",
     });
   },
