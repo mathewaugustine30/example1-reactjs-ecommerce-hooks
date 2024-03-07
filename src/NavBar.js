@@ -71,7 +71,7 @@ let NavBar = () => {
                 to="/products"
                 activeClassName="active"
               >
-                <i className="fa fa-suitecase"></i> Products
+                <i className="fa fa-suitcase"></i> Products
               </NavLink>
             </li>
           ) : (
