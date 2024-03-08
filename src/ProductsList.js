@@ -3,93 +3,115 @@ import { ProductService, BrandsService, CategoriesService } from "./Service";
 
 function ProductsList(props) {
   //state
-  let [ search, setSearch ] = useState("");
-  let [ products, setProducts ] = useState([]);
+  let [products, setProducts] = useState([]);
+  let [search, setSearch] = useState("");
 
-  //useEffect - execute a callback function when the component is rendered for the first time
+  //useEffect
   useEffect(() => {
     (async () => {
-      //request to brands table
+      //get data from brands database
       let brandsResponse = await BrandsService.fetchBrands();
       let brandsResponseBody = await brandsResponse.json();
 
-      //request to categories table
+      //get data from categories database
       let categoriesResponse = await CategoriesService.fetchCategories();
       let categoriesResponseBody = await categoriesResponse.json();
 
-      //request to products table
-      let productsResponse = await ProductService.fetchProducts();
+      //get data from products database
+      let productsResponse = await fetch(
+        `http://localhost:5001/products`,
+        { method: "GET" }
+      );
       let productsResponseBody = await productsResponse.json();
 
-      //set "category" property into each product
-      productsResponseBody.forEach(product => {
-        product.category = CategoriesService.getCategoryByCategoryId(categoriesResponseBody, product.categoryId);
+      let filteredProducts = productsResponseBody.filter(prod =>prod.productName.includes(search))
 
-        product.brand = BrandsService.getBrandByBrandId(brandsResponseBody, product.brandId)
+      filteredProducts.forEach((product) => {
+        product.brand = BrandsService.getBrandByBrandId(
+          brandsResponseBody,
+          product.brandId
+        );
+
+        product.category = CategoriesService.getCategoryByCategoryId(
+          categoriesResponseBody,
+          product.categoryId
+        );
       });
 
-      setProducts(productsResponseBody);
+      setProducts(filteredProducts);
     })();
-    
-  }, []);
+  }, [search]);
 
-  return <div className="row">
-    <div className="col-12">
-      <div className="row p-3 header">
-        <div className="col-lg-3">
-          <h4>
-            <i className="fa fa-suitcase"></i>
-            &nbsp;
-            Products&nbsp;
-            <span className="badge badge-secondary">{products.length}</span>
+  return (
+    <div className="row">
+      <div className="col-12">
+        <div className="row p-3 header">
+          <div className="col-lg-3">
+            <h4>
+              <i className="fa fa-suitcase"></i> Products{" "}
+              <span className="badge badge-secondary">{products.length}</span>
             </h4>
-        </div>
+          </div>
 
-        <div className="col-lg-9">
-          <input type="search" placeholder="Search" className="form-control" autofocus="autofocus" value={search} onChange={(event) => {
-            setSearch(event.target.value);
-          }}></input>
+          <div className="col-lg-9">
+            <input
+              type="search"
+              value={search}
+              placeholder="Search"
+              className="form-control"
+              autoFocus="autofocus"
+              onChange={(event) => {
+                setSearch(event.target.value);
+              }}
+            />
+          </div>
         </div>
       </div>
-    </div>
 
-    <div className="col-lg-10 mx-auto mb-2">
-      <div className="card my-2 shadow">
-        <div className="card-body">
-          <table className="table">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Product Name</th>
-                <th>Price</th>
-                <th>Brand</th>
-                <th>Category</th>
-                <th>Rating</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {products.map(product => (
-                <tr key={product.id}>
-                  <td>{product.id}</td>
-                  <td>{product.productName}</td>
-                  <td>{product.price}</td>
-                  <td>{product.brand.brandName}</td>
-                  <td>{product.category.categoryName}</td>
-                  <td>
-                    {[...Array(product.rating).keys()].map(n => (
-                    <i className="fa fa-star text-warning" key={n}></i>))}
-                    {[...Array(5 - product.rating).keys()].map(n => (
-                    <i className="fa fa-star-o text-warning" key={n}></i>))}
-                    </td>
+      <div className="col-lg-10 mx-auto mb-2">
+        <div className="card my-2 shadow">
+          <div className="card-body">
+            <table className="table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Product Name</th>
+                  <th>Price</th>
+                  <th>Brand</th>
+                  <th>Category</th>
+                  <th>Rating</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {products.map((product) => (
+                  <tr key={product.id}>
+                    <td>{product.id}</td>
+                    <td>{product.productName}</td>
+                    <td>{product.price}</td>
+                    <td>{product.brand.brandName}</td>
+                    <td>{product.category.categoryName}</td>
+                    <td>
+                      {[...Array(product.rating).keys()].map((n) => {
+                        return (
+                          <i className="fa fa-star text-warning" key={n}></i>
+                        );
+                      })}
+                      {[...Array(5 - product.rating).keys()].map((n) => {
+                        return (
+                          <i className="fa fa-star-o text-warning" key={n}></i>
+                        );
+                      })}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
-  </div>;
+  );
 }
 
 export default ProductsList;
+
