@@ -1,3 +1,10 @@
+
+<img width="1358" alt="image" src="https://github.com/mathewaugustine30/example1-reactjs-ecommerce-hooks/assets/19630912/09cd1aca-2a19-4143-a094-fee245f1c28d">
+
+
+<img width="1698" alt="image" src="https://github.com/mathewaugustine30/example1-reactjs-ecommerce-hooks/assets/19630912/af26ab49-9180-440a-a9e4-273e74d6b909">
+
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
